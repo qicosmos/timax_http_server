@@ -23,7 +23,11 @@
     <ClCompile Include="picohttpparser.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="connection.hpp" />
     <ClInclude Include="picohttpparser.h" />
+    <ClInclude Include="request.hpp" />
+    <ClInclude Include="response.hpp" />
+    <ClInclude Include="server.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E30B2F8E-B57F-4D8C-A8FA-9853C39DEF77}</ProjectGuid>

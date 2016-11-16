@@ -26,5 +26,17 @@
     <ClInclude Include="picohttpparser.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="request.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="response.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="connection.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="server.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
