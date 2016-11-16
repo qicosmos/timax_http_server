@@ -20,6 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="picohttpparser.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="picohttpparser.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E30B2F8E-B57F-4D8C-A8FA-9853C39DEF77}</ProjectGuid>
