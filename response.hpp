@@ -1,14 +1,18 @@
 #pragma once
-class response
+namespace timax
 {
-public:
-
-	response()
+	class response_t
 	{
-	}
+	public:
 
-	~response()
-	{
-	}
-};
+		response_t()
+		{
+		}
+
+		~response_t()
+		{
+		}
+	};
+}
+
 

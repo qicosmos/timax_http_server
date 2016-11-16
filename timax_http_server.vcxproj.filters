@@ -38,5 +38,8 @@
     <ClInclude Include="server.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="io_service_pool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

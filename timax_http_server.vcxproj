@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connection.hpp" />
+    <ClInclude Include="io_service_pool.hpp" />
     <ClInclude Include="picohttpparser.h" />
     <ClInclude Include="request.hpp" />
     <ClInclude Include="response.hpp" />
