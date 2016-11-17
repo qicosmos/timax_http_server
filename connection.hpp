@@ -70,7 +70,7 @@ namespace timax
 		void read_body(const std::shared_ptr<connection>& self, request_t request, size_t body_len)
 		{
 			//read http body
-			boost::asio::async_read(socket_, read_buf_, [body_len](const boost::system::error_code &, size_t size) { return size = body_len; }, 
+			boost::asio::async_read(socket_, read_buf_, boost::asio::transfer_exactly(body_len),
 				[this, self, req = std::move(request)]
 				(const boost::system::error_code& ec, std::size_t bytes_transferred)
 			{
@@ -84,7 +84,8 @@ namespace timax
 				//response
 				//todo
 
-				close_short_conneciton(req);
+				if (!close_short_conneciton(req))
+					read_head();
 			});
 		}
 
@@ -135,7 +136,6 @@ namespace timax
 	private:
 		boost::asio::ip::tcp::socket socket_;
 		boost::asio::streambuf read_buf_;
-		char buf_[1];
 		const int MAX_LEN = 8192;
 		const static std::map<unsigned int, std::string> http_status_table;
 	};
