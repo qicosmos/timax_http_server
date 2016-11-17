@@ -14,18 +14,28 @@ namespace timax
 
 		void start()
 		{
-
+			read_head();
 		}
 
+		boost::asio::ip::tcp::socket& socket()
+		{
+			return socket_;
+		}
+
+	private:
 		void read_head()
 		{
+			read_buf_.consume(read_buf_.size());//Çå¿Õbuf
 			auto self = this->shared_from_this();
 			boost::asio::async_read_until(socket_, read_buf_, "\r\n\r\n", [this, self]
 				(const boost::system::error_code& ec, std::size_t bytes_transferred)
 			{
 				if (ec != 0) 
 				{
-					//on_finish(ec);
+					if (ec == boost::asio::error::eof)
+					{
+						std::cout << "client socket shutdown" << std::endl;
+					}
 					close();
 					return;
 				}
@@ -43,25 +53,17 @@ namespace timax
 
 				size_t body_len = request.body_length();
 				if (body_len == 0)
-					read_body(self, std::move(request));
-				else
-					read_body(self, std::move(request), body_len);
-			});
-		}
-
-		void read_body(const std::shared_ptr<connection>& self, request_t request)
-		{
-			//wait for eof
-			boost::asio::async_read(socket_, read_buf_, [this, self, req = std::move(request)]
-				(const boost::system::error_code& ec, std::size_t bytes_transferred)
-			{
-				if (ec == boost::asio::error::eof)
 				{
-					shutdown_short_conneciton(req);
-				}
+					if(request.has_keepalive_attr())
+						send_response();
 
-				//on error
-				close();
+					if(!close_short_conneciton(request))
+						read_head();
+				}	
+				else
+				{
+					read_body(self, std::move(request), body_len);
+				}					
 			});
 		}
 
@@ -79,47 +81,74 @@ namespace timax
 				}
 
 				//callback to user
+				//response
 				//todo
 
-				//shutdown short connection
-				shutdown_short_conneciton(req);
+				close_short_conneciton(req);
 			});
 		}
 
-		void shutdown_short_conneciton(const request_t& request)
+		bool close_short_conneciton(const request_t& request)
 		{
 			if (request.minor_version() == 0 && !request.has_keepalive_attr()) //short conneciton
 			{
-				shutdown(socket_);
-				return;
+				close();
+				return true;
 			}
 
 			if (request.minor_version() == 1 && request.has_close_attr())
 			{
-				shutdown(socket_);
-				return;
+				close();
+				return true;
 			}
-		}
-
-		bool shutdown(boost::asio::ip::tcp::socket& s)
-		{
-			boost::system::error_code ignored_ec;
-			s.shutdown(boost::asio::ip::tcp::socket::shutdown_send, ignored_ec);
 
 			return false;
 		}
 
+		void shutdown_send(boost::asio::ip::tcp::socket& s)
+		{
+			boost::system::error_code ignored_ec;
+			s.shutdown(boost::asio::ip::tcp::socket::shutdown_send, ignored_ec);
+		}
+
 		void close()
 		{
-			socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 			boost::system::error_code ignored_ec;
+			socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 			socket_.close(ignored_ec);
+		}
+
+		void send_response() 
+		{
+			const std::string str = "HTTP/1.1 200 OK\r\n"
+				"Date: Thu, 17 Nov 2016 08:38:08 GMT\r\n"
+				"Server: Apache\r\n"
+				"Content-Length: 11\r\n"
+				"Connection: Keep-Alive\r\n"
+				"Content-Type: text/html\r\n"
+				"\r\n"
+				"hello world";
+			boost::system::error_code ec;
+			boost::asio::write(socket_, boost::asio::buffer(str), ec);
 		}
 
 	private:
 		boost::asio::ip::tcp::socket socket_;
 		boost::asio::streambuf read_buf_;
+		char buf_[1];
 		const int MAX_LEN = 8192;
+		const static std::map<unsigned int, std::string> http_status_table;
+	};
+
+	const std::map<unsigned int, std::string>
+		connection::http_status_table =
+	{
+		{ 200, "200 OK" },
+		{ 404, "404 Not Found" },
+		{ 413, "413 Request Entity Too Large" },
+		{ 500, "500 Server Error" },
+		{ 501, "501 Not Implemented" },
+		{ 505, "505 HTTP Version Not Supported" }
 	};
 }
 

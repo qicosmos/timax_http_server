@@ -7,16 +7,16 @@ using namespace boost::asio::ip;
 
 namespace timax
 {
-	class server
+	class server_t
 	{
 	public:
 
-		server(uint16_t port, size_t pool_size) : ios_pool_(pool_size),
+		server_t(uint16_t port, size_t pool_size) : ios_pool_(pool_size),
 			acceptor_(ios_pool_.get_io_service(), tcp::endpoint{ tcp::v4(), port })
 		{
 		}
 
-		~server()
+		~server_t()
 		{
 			stop();
 		}
@@ -34,21 +34,21 @@ namespace timax
 	private:
 		void do_accept()
 		{
-			//auto new_connection = std::make_shared<connection>(ios_pool_.get_io_service());
+			auto new_connection = std::make_shared<connection>(ios_pool_.get_io_service());
 
-			//acceptor_.async_accept(new_connection->socket(), [this, new_connection](boost::system::error_code const& error)
-			//{
-			//	if (!error)
-			//	{
-			//		new_connection->start();
-			//	}
-			//	else
-			//	{
-			//		// TODO log error
-			//	}
+			acceptor_.async_accept(new_connection->socket(), [this, new_connection](boost::system::error_code const& error)
+			{
+				if (!error)
+				{
+					new_connection->start();
+				}
+				else
+				{
+					// TODO log error
+				}
 
-			//	do_accept();
-			//});
+				do_accept();
+			});
 		}
 
 	private:

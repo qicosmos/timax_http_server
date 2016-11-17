@@ -86,7 +86,17 @@ namespace timax
 			if (it == headers_.end())
 				return false;
 
-			return it->second == "keep-alive";
+			if (it->second.size() != 10)
+				return false;
+
+			const char* data = "keep-alive";
+			for (size_t i = 0; i < 10; i++)
+			{
+				if (data[i] != std::tolower(it->second[i]))
+					return false;
+			}
+
+			return true;
 		}
 
 		bool has_close_attr() const
@@ -95,7 +105,17 @@ namespace timax
 			if (it == headers_.end())
 				return false;
 
-			return it->second == "close";
+			if (it->second.size() != 5)
+				return false;
+
+			const char* data = "close";
+			for (size_t i = 0; i < 5; i++)
+			{
+				if(data[i] != std::tolower(it->second[i]))
+					return false;
+			}
+
+			return true;
 		}
 
 	private:
