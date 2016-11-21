@@ -12,6 +12,11 @@ namespace timax
 		{
 		}
 
+		~connection()
+		{
+			close();
+		}
+
 		void start()
 		{
 			read_head();
@@ -40,7 +45,7 @@ namespace timax
 					else if (ec == boost::asio::error::not_found)
 					{
 						statas_code = 413;
-						send_response(statas_code, self);
+						response_and_close(statas_code, self);
 						return;
 					}
 					close();
@@ -52,37 +57,48 @@ namespace timax
 				if (r < 0)
 				{
 					statas_code = 400;
-					send_response(statas_code, self);
+					response_and_close(statas_code, self);
 					return;
 				}
 
+				bool need_close = need_close_conneciton(request);
 				size_t body_len = request.body_length();
 				if (body_len == 0)
 				{
-					if(request.has_keepalive_attr())
-						send_response(statas_code, self);
-
-					if(!close_short_conneciton(request))
-						read_head();
+					if (request.has_keepalive_attr())
+					{
+						response_and_read(statas_code, need_close, self);
+					}
+					else
+					{
+						if (need_close)
+						{
+							close();
+						}
+						else
+						{
+							read_head();
+						}
+					}
 				}	
 				else
 				{
 					if (body_len + bytes_transferred>8192)
 					{
 						statas_code = 413;
-						send_response(statas_code, self);
+						response_and_close(statas_code, self);
 						return;
 					}
-					read_body(self, std::move(request), body_len);
+					read_body(self, need_close, std::move(request), body_len);
 				}					
 			});
 		}
 
-		void read_body(const std::shared_ptr<connection>& self, request_t request, size_t body_len)
+		void read_body(const std::shared_ptr<connection>& self, bool need_close, request_t request, size_t body_len)
 		{			
 			//read http body
 			boost::asio::async_read(socket_, read_buf_, boost::asio::transfer_exactly(body_len),
-				[this, self, req = std::move(request)]
+				[this, self, need_close, req = std::move(request)]
 				(const boost::system::error_code& ec, std::size_t bytes_transferred)
 			{
 				if (ec)//on error
@@ -99,34 +115,31 @@ namespace timax
 					//response
 					//todo
 
-					if (!close_short_conneciton(req))
-						read_head();
+					response_and_read(statas_code, need_close, self);
 				}
 				catch (const std::exception& ex)
 				{
 					std::cout << ex.what() << std::endl;
 					statas_code = 400;
-					send_response(statas_code, self);
+					response_and_close(statas_code, self);
 				}
 				catch (...)
 				{
 					statas_code = 400;
-					send_response(statas_code, self);
+					response_and_close(statas_code, self);
 				}
 			});
 		}
 
-		bool close_short_conneciton(const request_t& request)
+		bool need_close_conneciton(const request_t& request)
 		{
 			if (request.minor_version() == 0 && !request.has_keepalive_attr()) //short conneciton
 			{
-				close();
 				return true;
 			}
 
 			if (request.minor_version() == 1 && request.has_close_attr())
 			{
-				close();
 				return true;
 			}
 
@@ -141,6 +154,9 @@ namespace timax
 
 		void close()
 		{
+			if (!socket_.is_open())
+				return;
+
 			boost::system::error_code ignored_ec;
 			socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 			socket_.close(ignored_ec);
@@ -156,15 +172,31 @@ namespace timax
 			"hello world";
 
 		//异步发送消息，响应之后如果不继续read则该连接会被关闭
-		void send_response(size_t status_code, const std::shared_ptr<connection>& self)
+		void response_and_close(size_t status_code, const std::shared_ptr<connection>& self)
 		{
 			boost::asio::async_write(socket_, boost::asio::buffer(str_), [this, self](const boost::system::error_code& ec, std::size_t bytes_transferred)
 			{
-				if (ec != 0) 
+				if (ec != 0)
 				{
 					std::cout << ec.message() << std::endl;
 				}
-				socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+				close();
+			});
+		}
+
+		void response_and_read(size_t status_code, bool need_close, const std::shared_ptr<connection>& self)
+		{
+			boost::asio::async_write(socket_, boost::asio::buffer(str_), [this, need_close, self](const boost::system::error_code& ec, std::size_t bytes_transferred)
+			{
+				if (ec != 0)
+				{
+					std::cout << ec.message() << std::endl;
+				}
+
+				if(need_close)
+					close();
+				else
+					read_head();
 			});
 		}
 
