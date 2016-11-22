@@ -21,6 +21,9 @@
     <ClCompile Include="picohttpparser.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="path_to_regex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="picohttpparser.h">
@@ -39,6 +42,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="io_service_pool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="http_router.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="method.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="route.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="path_to_regex.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
