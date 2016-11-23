@@ -47,7 +47,7 @@ namespace timax
 			return *this;
 		}
 
-		void process_route(request_t* req, response_t* res);
+		bool process_route(request_t* req, response_t* res);
 
 	private:
 		void do_accept();

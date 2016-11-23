@@ -100,9 +100,11 @@ void connection::read_body(const std::shared_ptr<connection>& self, bool need_cl
 void connection::response(size_t status_code, bool need_close, const std::shared_ptr<connection>& self, request_t& request)
 {
 	auto response = std::make_shared<response_t>(this, request.minor_version());
-	response->set_status_code(status_code);
+	response->set_status(status_code);
 	//callback to user
-	server_->process_route(&request, response.get());
+	bool success = server_->process_route(&request, response.get());
+	if(!success)
+		need_close = true;
 
 	response->send_response(need_close);
 }

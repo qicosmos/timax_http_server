@@ -19,8 +19,9 @@ void server_t::do_accept()
 	});
 }
 
-void server_t::process_route(request_t* req, response_t* res)
+bool server_t::process_route(request_t* req, response_t* res)
 {
+	bool success = true;
 	try
 	{
 		//auto parsed_route = router_.match(req->method(), req->uri().path());
@@ -31,6 +32,9 @@ void server_t::process_route(request_t* req, response_t* res)
 	catch (const std::exception& err)
 	{
 		printf("<Server> Router_error: %s - Responding with 404.\n", err.what());
-		//res->send_response(send_code(http::Not_Found, true);
+		res->set_status(404, true);
+		success = false;
 	}
+
+	return success;
 }

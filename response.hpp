@@ -31,9 +31,10 @@ namespace timax
 			buffer_.sputn(body.data(), body.size());
 		}
 
-		void set_status_code(unsigned int status_code)
+		void set_status(unsigned int status_code, bool need_close = false)
 		{
 			status_code_ = status_code;
+			need_close_ = need_close;
 		}
 
 	private:
@@ -41,6 +42,7 @@ namespace timax
 		void send_response(bool need_close = true);
 
 		unsigned int status_code_;
+		bool need_close_;
 		int minor_version_;
 		std::string status_line_;
 		std::string header_str_;		
