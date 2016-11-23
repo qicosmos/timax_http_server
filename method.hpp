@@ -13,7 +13,8 @@ namespace timax
 			INVALID = 0xffff
 		}; //< enum Method
 
-		namespace method {
+		namespace method 
+		{
 
 			/**
 			* @brief Get the string representation from an HTTP
@@ -37,7 +38,8 @@ namespace timax
 
 				auto e = strings.size() - 1;
 
-				if ((m >= 0) && (m < e)) {
+				if (((size_t)m >= 0) && ((size_t)m < e)) 
+				{
 					return strings[m];
 				}
 
@@ -53,9 +55,10 @@ namespace timax
 			*
 			* @return The code mapped to the method string
 			**/
-			inline Method code(const std::string& method) noexcept {
-
-				const static std::unordered_map<std::string, Method> code_map{
+			inline Method code(const std::string& method) noexcept 
+			{
+				const static std::unordered_map<std::string, Method> code_map
+				{
 					{ "GET",     GET },
 					{ "POST",    POST },
 					{ "PUT",     PUT },
@@ -72,11 +75,13 @@ namespace timax
 				return (it != code_map.end()) ? it->second : INVALID;
 			}
 
-			inline bool is_content_length_allowed(const Method method) noexcept {
+			inline bool is_content_length_allowed(const Method method) noexcept 
+			{
 				return (method == POST) || (method == PUT);
 			}
 
-			inline bool is_content_length_required(const Method method) noexcept {
+			inline bool is_content_length_required(const Method method) noexcept 
+			{
 				return (method == POST) || (method == PUT);
 			}
 

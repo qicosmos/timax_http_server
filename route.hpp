@@ -5,6 +5,7 @@
 
 namespace timax
 {
+	class response_t;
 	typedef void(*Handler)(request_t*, response_t*);
 	using route_expr = std::regex;
 

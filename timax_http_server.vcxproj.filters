@@ -24,6 +24,15 @@
     <ClCompile Include="path_to_regex.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="connection.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="server.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="response.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="picohttpparser.h">

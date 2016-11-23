@@ -19,9 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="connection.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="path_to_regex.cpp" />
     <ClCompile Include="picohttpparser.c" />
+    <ClCompile Include="response.cpp" />
+    <ClCompile Include="server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="connection.hpp" />
