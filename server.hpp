@@ -41,6 +41,12 @@ namespace timax
 			return router_;
 		}
 
+		server_t& set_router(const http_router& router)
+		{
+			router_ = router;
+			return *this;
+		}
+
 		void process_route(request_t* req, response_t* res);
 
 	private:

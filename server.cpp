@@ -25,7 +25,7 @@ void server_t::process_route(request_t* req, response_t* res)
 	{
 		//auto parsed_route = router_.match(req->method(), req->uri().path());
 		auto parsed_route = router_.match(http::method::code(req->method().to_string()), req->url().to_string());
-		//req->set_params(parsed_route.parsed_values);
+		req->set_params(std::move(parsed_route.parsed_values));
 		parsed_route.job(req, res);
 	}
 	catch (const std::exception& err)

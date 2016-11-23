@@ -28,7 +28,7 @@ namespace timax
 		struct parsed_route_t
 		{
 			Handler job;
-			std::map<std::string, std::string> parsed_values;
+			std::unordered_map<std::string, std::string> parsed_values;
 		};
 
 		inline parsed_route_t match(http::Method method, const std::string& path)
@@ -46,7 +46,7 @@ namespace timax
 					++route.hits;
 
 					//Set the pairs in params:
-					std::map<std::string, std::string> params;
+					std::unordered_map<std::string, std::string> params;
 					std::smatch res;
 
 					for (std::sregex_iterator i = std::sregex_iterator{ path.begin(), path.end(), route.expr };

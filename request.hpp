@@ -2,6 +2,7 @@
 #include <boost/utility/string_ref.hpp>
 #include <boost/lexical_cast.hpp>
 #include <map>
+#include <unordered_map>
 #include "picohttpparser.h"
 
 namespace timax
@@ -118,12 +119,24 @@ namespace timax
 			return true;
 		}
 
+		void set_params(std::unordered_map<std::string, std::string> params)
+		{
+			params_ = std::move(params);
+		}
+
+		const std::unordered_map<std::string, std::string>& params() const
+		{
+			return params_;
+		}
+
 	private:
 		boost::string_ref method_;
 		boost::string_ref url_;
 		int minor_version_ = 0;
 		size_t body_len_ = 0;
 		std::map<boost::string_ref, boost::string_ref> headers_;
+
+		std::unordered_map<std::string, std::string> params_;
 	};
 }
 

@@ -34,6 +34,11 @@ namespace timax
 			buffer_.sputn(data, size); 
 		}
 
+		void add_body(const std::string& body)
+		{
+			buffer_.sputn(body.data(), body.size());
+		}
+
 		void send_response(bool need_close = true);
 
 		void set_callback(Callback callback)

@@ -102,8 +102,8 @@ void connection::response(size_t status_code, bool need_close, const std::shared
 	auto response = std::make_shared<response_t>(this);
 	//callback to user
 	server_->process_route(&request, response.get());
-	std::string body = "hello";
-	response->add_body(body.data(), body.size());
+	//std::string body = "hello";
+	//response->add_body(body.data(), body.size());
 	response->init_header(status_code, request.minor_version());
 
 	//response->set_callback([this, &response](auto buffers, auto need_close)
