@@ -10,6 +10,36 @@ namespace timax
 	class request_t
 	{
 	public:
+		boost::string_ref method() const
+		{
+			return method_;
+		}
+
+		boost::string_ref url() const
+		{
+			return url_;
+		}
+
+		int minor_version() const
+		{
+			return minor_version_;
+		}
+
+		const std::map<boost::string_ref, boost::string_ref>& headers() const
+		{
+			return headers_;
+		}
+
+		const std::unordered_map<std::string, std::string>& params() const
+		{
+			return params_;
+		}
+	private:
+		void set_params(std::unordered_map<std::string, std::string> params)
+		{
+			params_ = std::move(params);
+		}
+
 		int parse(const char* buf, size_t size)
 		{
 			const char *method;
@@ -18,7 +48,7 @@ namespace timax
 			size_t path_len;
 			int minor_version;
 			struct phr_header headers[15];
-			size_t num_headers=15;
+			size_t num_headers = 15;
 
 			int last_len = 0;
 			auto r = phr_parse_request(buf, size, &method, &method_len, &path, &path_len, &minor_version, headers, &num_headers, last_len);
@@ -43,7 +73,7 @@ namespace timax
 				catch (const std::exception&)
 				{
 					r = -1;
-				}				
+				}
 			}
 
 			if (r < 0)
@@ -59,26 +89,6 @@ namespace timax
 		size_t body_length() const
 		{
 			return body_len_;
-		}
-
-		boost::string_ref method() const
-		{
-			return method_;
-		}
-
-		boost::string_ref url() const
-		{
-			return url_;
-		}
-
-		int minor_version() const
-		{
-			return minor_version_;
-		}
-
-		const std::map<boost::string_ref, boost::string_ref>& headers() const
-		{
-			return headers_;
 		}
 
 		bool has_keepalive_attr() const
@@ -112,24 +122,16 @@ namespace timax
 			const char* data = "close";
 			for (size_t i = 0; i < 5; i++)
 			{
-				if(data[i] != std::tolower(it->second[i]))
+				if (data[i] != std::tolower(it->second[i]))
 					return false;
 			}
 
 			return true;
 		}
 
-		void set_params(std::unordered_map<std::string, std::string> params)
-		{
-			params_ = std::move(params);
-		}
-
-		const std::unordered_map<std::string, std::string>& params() const
-		{
-			return params_;
-		}
-
 	private:
+		friend class connection;
+		friend class server_t;
 		boost::string_ref method_;
 		boost::string_ref url_;
 		int minor_version_ = 0;

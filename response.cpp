@@ -12,16 +12,17 @@ const std::unordered_map<unsigned int, std::string> response_t::HTTP_STATUS_TABL
 	{ 505, "505 HTTP Version Not Supported" }
 };
 
-void response_t::init_header(unsigned int status_code, int minor_version)
+void response_t::send_response(bool need_close)
 {
-	header_str_.clear();
+	assert(conn_);
+
 	std::string protocal = "";
-	if (minor_version == 1)
+	if (minor_version_ == 1)
 		protocal = "HTTP/1.1 ";
 	else
 		protocal = "HTTP/1.0 ";
 
-	status_line_ = protocal + HTTP_STATUS_TABLE.at(status_code) + "\r\n";
+	status_line_ = protocal + HTTP_STATUS_TABLE.at(status_code_) + "\r\n";
 
 	header_str_ = "Content-Length: " + boost::lexical_cast<std::string>(buffer_.size()) + "\r\n";
 
@@ -34,11 +35,6 @@ void response_t::init_header(unsigned int status_code, int minor_version)
 	}
 
 	header_str_ += "\r\n";
-}
-
-void response_t::send_response(bool need_close)
-{
-	assert(conn_);
 
 	response_buffers_.push_back(boost::asio::buffer(status_line_));
 	response_buffers_.push_back(boost::asio::buffer(header_str_));

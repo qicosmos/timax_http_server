@@ -12,17 +12,9 @@ namespace timax
 	class response_t : public std::enable_shared_from_this<response_t>
 	{
 	public:
-		using Callback = std::function<void(const std::vector<boost::asio::const_buffer>&, bool)>;
-
-		response_t(connection* conn) : conn_(conn)
+		response_t(connection* conn, int minor_version = 1) : conn_(conn), minor_version_(minor_version)
 		{
 		}
-
-		~response_t()
-		{
-		}
-
-		void init_header(unsigned int status_code, int minor_version);
 
 		void add_header(const std::string& key, const std::string& val)
 		{
@@ -39,25 +31,22 @@ namespace timax
 			buffer_.sputn(body.data(), body.size());
 		}
 
-		void send_response(bool need_close = true);
-
-		void set_callback(Callback callback)
+		void set_status_code(unsigned int status_code)
 		{
-			callback_ = callback;
-		}
-
-		const std::vector<boost::asio::const_buffer> get_buffers() const
-		{
-			return response_buffers_;
+			status_code_ = status_code;
 		}
 
 	private:
+		friend class connection;
+		void send_response(bool need_close = true);
+
+		unsigned int status_code_;
+		int minor_version_;
 		std::string status_line_;
 		std::string header_str_;		
 		boost::asio::streambuf buffer_;
 		std::unordered_map<std::string, std::string> header_;
 		std::vector<boost::asio::const_buffer> response_buffers_;
-		Callback callback_;
 		connection* conn_;
 		const static std::unordered_map<unsigned int, std::string> HTTP_STATUS_TABLE;
 	};
