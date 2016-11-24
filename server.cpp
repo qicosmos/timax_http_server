@@ -21,20 +21,20 @@ void server_t::do_accept()
 
 bool server_t::process_route(request_t* req, response_t* res)
 {
-	bool success = true;
+	auto parsed_route = router_.match(http::method::code(req->method().to_string()), req->url().to_string());
+	if (parsed_route.empty())
+		return false;
+
+	req->set_params(std::move(parsed_route.parsed_values));
 	try
 	{
-		//auto parsed_route = router_.match(req->method(), req->uri().path());
-		auto parsed_route = router_.match(http::method::code(req->method().to_string()), req->url().to_string());
-		req->set_params(std::move(parsed_route.parsed_values));
 		parsed_route.job(req, res);
 	}
-	catch (const std::exception& err)
+	catch (const std::exception& ex)
 	{
-		printf("<Server> Router_error: %s - Responding with 404.\n", err.what());
-		res->set_status(404, true);
-		success = false;
+		std::cout << ex.what() << std::endl;
+		return false;
 	}
-
-	return success;
+	
+	return true;
 }

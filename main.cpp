@@ -33,7 +33,7 @@ int main()
 		res->add_body("hello world");
 	});
 
-	server.set_router(router).start();
+	server.set_static_dir("./static").set_router(router).start();
 	
 	std::string str;
 	std::cin >> str;

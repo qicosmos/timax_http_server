@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "connection.hpp"
 
 using namespace timax;
@@ -103,10 +104,60 @@ void connection::response(size_t status_code, bool need_close, const std::shared
 	response->set_status(status_code);
 	//callback to user
 	bool success = server_->process_route(&request, response.get());
-	if(!success)
+	if (!success)
+	{
+		success = response_file(request, response.get(), need_close);
+	}
+
+	if (!success)
+	{
+		std::cout<<"<Server> Router_error: %s - Responding with 404.\n";
+		response->set_status(404, true);
 		need_close = true;
+	}
 
 	response->send_response(need_close);
+}
+
+bool connection::response_file(request_t& req, response_t* res, bool need_close)
+{
+	if (server_->static_dir().empty())
+	{
+		std::cout << "<Server> Response_file_error: %s - Responding with 404.\n" << std::endl;
+		return false;
+	}
+
+	std::string path = server_->static_dir() + req.url().to_string();
+	std::fstream in(path, std::ios::binary | std::ios::in);
+	if (!in)
+	{
+		return false;
+	}
+
+	in.seekg(0, std::ios::end);
+	size_t resource_size_bytes =static_cast<std::size_t>(in.tellg());
+	if (resource_size_bytes > 1000*1000*2000) //too long
+		return false;
+
+	std::string header =
+		"HTTP/1.1 200 OK\r\n"
+		"Content-Type: " + http::content_type(path) + "\r\n"
+		"Content-Length: " + boost::lexical_cast<std::string>(resource_size_bytes) + "\r\n";
+
+	if (!need_close)
+	{
+		header += "Connection: Keep-Alive\r\n";
+	}
+	header += "\r\n";
+
+	in.seekg(0, std::ios::beg);
+
+	resource_buffer_.reset(new char[resource_size_bytes]);
+
+	in.read(resource_buffer_.get(), resource_size_bytes);
+	res->add_resource(resource_buffer_.get(), resource_size_bytes);
+
+	return true;
 }
 
 void connection::write(const std::shared_ptr<response_t>& response, const std::vector<boost::asio::const_buffer>& buffers, bool need_close)

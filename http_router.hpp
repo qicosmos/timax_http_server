@@ -27,16 +27,21 @@ namespace timax
 
 		struct parsed_route_t
 		{
-			Handler job;
+			Handler job = nullptr;
 			std::unordered_map<std::string, std::string> parsed_values;
+			bool empty() const
+			{
+				return job == nullptr;
+			}
 		};
 
 		inline parsed_route_t match(http::Method method, const std::string& path)
 		{
 			auto routes = route_table_[method];
 
-			if (routes.empty()) {
-				throw std::runtime_error("No routes for method " + http::method::str(method));
+			if (routes.empty()) 
+			{
+				return{};
 			}
 
 			for (auto& route : routes) 
@@ -66,7 +71,7 @@ namespace timax
 				}
 			}
 
-			throw std::runtime_error("No matching route for " + http::method::str(method) + " " + path);
+			return{};
 		}
 
 		http_router& on_get(const std::string& route, Handler handler)

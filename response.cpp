@@ -23,8 +23,8 @@ void response_t::send_response(bool need_close)
 		protocal = "HTTP/1.0 ";
 
 	status_line_ = protocal + HTTP_STATUS_TABLE.at(status_code_) + "\r\n";
-
-	header_str_ = "Content-Length: " + boost::lexical_cast<std::string>(buffer_.size()) + "\r\n";
+	std::size_t size = boost::asio::buffer_size(resource_buffer_);
+	header_str_ = "Content-Length: " + boost::lexical_cast<std::string>(size) + "\r\n";
 
 	for (auto& iter : header_)
 	{
@@ -38,8 +38,8 @@ void response_t::send_response(bool need_close)
 
 	response_buffers_.push_back(boost::asio::buffer(status_line_));
 	response_buffers_.push_back(boost::asio::buffer(header_str_));
-	if (buffer_.size()>0)
-		response_buffers_.push_back(boost::asio::buffer(buffer_.data(), buffer_.size()));
+	if (size>0)
+		response_buffers_.push_back(resource_buffer_);
 
 	auto self = this->shared_from_this();
 	conn_->write(self, response_buffers_, need_close);

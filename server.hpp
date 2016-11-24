@@ -49,6 +49,17 @@ namespace timax
 
 		bool process_route(request_t* req, response_t* res);
 
+		server_t& set_static_dir(const std::string& dir)
+		{
+			static_dir_ = dir;
+			return *this;
+		}
+
+		const std::string& static_dir() const
+		{
+			return static_dir_;
+		}
+
 	private:
 		void do_accept();
 
@@ -56,6 +67,8 @@ namespace timax
 		io_service_pool				ios_pool_;
 		tcp::acceptor				acceptor_;
 		http_router					router_;
+
+		std::string static_dir_;
 	};
 }
 

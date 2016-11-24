@@ -54,6 +54,8 @@ namespace timax
 			return false;
 		}
 
+		bool response_file(request_t& req, response_t* res, bool keep_alive);
+
 		void shutdown_send(boost::asio::ip::tcp::socket& s)
 		{
 			boost::system::error_code ignored_ec;
@@ -76,6 +78,7 @@ namespace timax
 		boost::asio::ip::tcp::socket socket_;
 		boost::asio::streambuf read_buf_;
 		const int MAX_LEN = 8192;
+		std::unique_ptr<char[]> resource_buffer_;
 		server_t* server_;
 	};
 }
