@@ -9,7 +9,7 @@ namespace timax
 	#define DEFINE_HANDLER(method, http_method)\
 	http_router& on_##method(const std::string& route, Handler handler)\
 	{\
-		route_table_[##http_method].emplace_back(route, handler);\
+		route_table_[http_method].emplace_back(route, handler);\
 		return *this;\
 	}
 
