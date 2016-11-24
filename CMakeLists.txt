@@ -35,7 +35,7 @@ set(SERVER_SOURCE
 )
 
 add_executable(http_server ${SERVER_SOURCE})
-target_link_libraries(async_client ${EXTRA_LIBS})
+target_link_libraries(http_server ${EXTRA_LIBS})
 
 include (InstallRequiredSystemLibraries)
 set (CPACK_PACKAGE_VERSION_MAJOR "1")
