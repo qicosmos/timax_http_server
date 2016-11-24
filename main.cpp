@@ -6,7 +6,7 @@ int main()
 {
 	using namespace std::string_literals;
 	using namespace timax;
-	server_t server(9000, 4);
+	server_t server(9000);
 	http_router router;
 
 	router.on_get("/", [](auto , auto res) 

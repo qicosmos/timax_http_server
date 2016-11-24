@@ -15,7 +15,7 @@ namespace timax
 	{
 	public:
 
-		server_t(uint16_t port, size_t pool_size) : ios_pool_(pool_size),
+		server_t(uint16_t port, size_t pool_size = std::thread::hardware_concurrency()) : ios_pool_(pool_size),
 			acceptor_(ios_pool_.get_io_service(), tcp::endpoint{ tcp::v4(), port })
 		{
 		}
