@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <map>
 #include <regex>
 #include "method.hpp"
 #include "route.hpp"
@@ -91,7 +92,7 @@ namespace timax
 		DEFINE_HANDLER(trace, http::TRACE);
 
 	private:
-		std::unordered_map<http::Method, std::vector<route>> route_table_;
+		std::map<http::Method, std::vector<route>> route_table_;
 	};
 }
 
