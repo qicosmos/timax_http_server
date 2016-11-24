@@ -4,6 +4,7 @@
 #include <boost/bind.hpp>
 #include <memory>
 #include <thread>
+#include <list>
 
 namespace timax 
 {
