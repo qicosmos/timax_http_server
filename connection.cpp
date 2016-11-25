@@ -103,19 +103,20 @@ void connection::response(size_t status_code, bool need_close, const std::shared
 {
 	auto response = std::make_shared<response_t>(this, request.minor_version());
 	response->set_status(status_code);
+	response->add_body("hello world");
 	//callback to user
-	bool success = server_->process_route(&request, response.get());
-	if (!success)
-	{
-		success = response_file(request, response.get(), need_close);
-	}
+	//bool success = server_->process_route(&request, response.get());
+	//if (!success)
+	//{
+	//	success = response_file(request, response.get(), need_close);
+	//}
 
-	if (!success)
-	{
-		std::cout<<"<Server> Router_error: %s - Responding with 404.\n";
-		response->set_status(404, true);
-		need_close = true;
-	}
+	//if (!success)
+	//{
+	//	std::cout<<"<Server> Router_error: %s - Responding with 404.\n";
+	//	response->set_status(404, true);
+	//	need_close = true;
+	//}
 
 	response->send_response(need_close);
 }
