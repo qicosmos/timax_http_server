@@ -26,6 +26,11 @@ void response_t::send_response(bool need_close)
 	std::size_t size = boost::asio::buffer_size(resource_buffer_);
 	header_str_ = "Content-Length: " + boost::lexical_cast<std::string>(size) + "\r\n";
 
+	if (!need_close)
+	{
+		header_.emplace("Connection", "keep-alive");
+	}
+
 	for (auto& iter : header_)
 	{
 		header_str_ += iter.first;
