@@ -11,7 +11,7 @@ int main()
 
 	router.on_get("/", [](auto , auto res) 
 	{
-		res->add_body("<html><body><h1>Simple example</h1></body></html>"s);
+		res->add_body("hello world"s);
 	});
 
 	router.on_get("/users/:id(\\d+)", [](auto req, auto res) 

@@ -36,21 +36,22 @@ void connection::read_head()
 		size_t body_len = request.body_length();
 		if (body_len == 0)
 		{
-			if (request.has_keepalive_attr())
-			{
-				response(statas_code, need_close, self, request);
-			}
-			else
-			{
-				if (need_close)
-				{
-					close();
-				}
-				else
-				{
-					read_head();
-				}
-			}
+			response(statas_code, need_close, self, request);
+			//if (request.has_keepalive_attr())
+			//{
+			//	response(statas_code, need_close, self, request);
+			//}
+			//else
+			//{
+			//	if (need_close)
+			//	{
+			//		close();
+			//	}
+			//	else
+			//	{
+			//		read_head();
+			//	}
+			//}
 		}
 		else
 		{
