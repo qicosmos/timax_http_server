@@ -18,6 +18,7 @@ void connection::read_head()
 				std::cout << "client socket shutdown" << std::endl;
 			}
 
+			std::cout << ec.message() << std::endl;
 			close();
 			return;
 		}
@@ -29,6 +30,7 @@ void connection::read_head()
 		if (r < 0)
 		{
 			statas_code = 400;
+			std::cout << "parse error" << std::endl;
 			response(statas_code, need_close, self, request);
 			return;
 		}
@@ -55,6 +57,7 @@ void connection::read_head()
 		}
 		else
 		{
+			std::cout << body_len << std::endl;
 			if (body_len + bytes_transferred>8192)
 			{
 				statas_code = 413;
