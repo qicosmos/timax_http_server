@@ -18,14 +18,6 @@ const std::unordered_map<unsigned int, std::string> response_t::HTTP_STATUS_TABL
 //"Connection: Keep-Alive\r\n\r\n"
 //"TEST";
 
-std::string g_str = 
-"HTTP/1.0 200 OK\r\n"
-"Content-Length: 4\r\n"
-"Server: timax_server/0.1\r\n"
-"Date: Mon, 28 Nov 2016 06:20:08 GMT\r\n"
-"\r\n"
-"test";
-
 void response_t::send_response(bool need_close)
 {
 	assert(conn_);
@@ -59,7 +51,7 @@ void response_t::send_response(bool need_close)
 	//response_buffers_.push_back(boost::asio::buffer(header_str_));
 	//if (size>0)
 	//	response_buffers_.push_back(resource_buffer_);
-	response_buffers_.push_back(boost::asio::buffer(g_str));
+//	response_buffers_.push_back(boost::asio::buffer(g_str));
 	auto self = this->shared_from_this();
 	conn_->write(self, response_buffers_, need_close);
 }

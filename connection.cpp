@@ -40,7 +40,14 @@ void connection::read_head()
 		size_t body_len = request.body_length();
 		if (body_len == 0)
 		{
-			response(statas_code, need_close, self, request);
+			boost::asio::async_write(socket_, boost::asio::buffer(g_str), [this, self](const boost::system::error_code& ec, std::size_t bytes_transferred) 
+			{
+				if (ec)
+					std::cout << ec.message() << std::endl;
+
+				close();
+			});
+			//response(statas_code, need_close, self, request);
 			//if (request.has_keepalive_attr())
 			//{
 			//	response(statas_code, need_close, self, request);

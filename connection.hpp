@@ -7,6 +7,14 @@
 
 namespace timax
 {
+	static std::string g_str =
+		"HTTP/1.0 200 OK\r\n"
+		"Content-Length: 4\r\n"
+		"Server: timax_server/0.1\r\n"
+		"Date: Mon, 28 Nov 2016 06:20:08 GMT\r\n"
+		"\r\n"
+		"test";
+
 	class server_t;
 	class response_t;
 	class connection : public std::enable_shared_from_this<connection>
