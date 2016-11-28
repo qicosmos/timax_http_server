@@ -8,7 +8,7 @@ using namespace boost::asio::ip;
 
 namespace timax
 {
-	class connection_t;
+	class connection;
 	class response_t;
 
 	class server_t
