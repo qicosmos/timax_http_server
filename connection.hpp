@@ -21,7 +21,7 @@ namespace timax
 	{
 	public:
 
-		connection(server_t* server, boost::asio::io_service& ios) : server_(server), socket_(ios), read_buf_(MAX_LEN)
+		connection(server_t* server, boost::asio::io_service& ios) : server_(server), socket_(ios)//, read_buf_(MAX_LEN)
 		{
 		}
 
@@ -83,7 +83,7 @@ namespace timax
 
 	private:
 		boost::asio::ip::tcp::socket socket_;
-		boost::asio::streambuf read_buf_;
+		std::array<char, 86> read_buf_;
 		const int MAX_LEN = 8192;
 		std::unique_ptr<char[]> resource_buffer_;
 		server_t* server_;

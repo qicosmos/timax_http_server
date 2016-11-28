@@ -5,9 +5,9 @@
 using namespace timax;
 void connection::read_head()
 {
-	read_buf_.consume(read_buf_.size());
+	//read_buf_.consume(read_buf_.size());
 	auto self = this->shared_from_this();
-	boost::asio::async_read_until(socket_, read_buf_, "\r\n\r\n", [this, self]
+	boost::asio::async_read(socket_, boost::asio::buffer(read_buf_), [this, self]
 		(const boost::system::error_code& ec, std::size_t bytes_transferred)
 	{
 		size_t statas_code = 200;
@@ -26,7 +26,7 @@ void connection::read_head()
 		std::cout << "read ok" << std::endl;
 
 		request_t request;
-		int r = request.parse(boost::asio::buffer_cast<const char*>(read_buf_.data()), bytes_transferred);
+		int r = request.parse(read_buf_.data(), bytes_transferred);
 		bool need_close = need_close_conneciton(request);
 
 		if (r < 0)
@@ -81,7 +81,7 @@ void connection::read_head()
 void connection::read_body(const std::shared_ptr<connection>& self, bool need_close, request_t request, size_t body_len)
 {
 	//read http body
-	boost::asio::async_read(socket_, read_buf_, boost::asio::transfer_exactly(body_len),
+	boost::asio::async_read(socket_, boost::asio::buffer(read_buf_), boost::asio::transfer_exactly(body_len),
 		[this, self, need_close, req = std::move(request)]
 	(const boost::system::error_code& ec, std::size_t bytes_transferred) mutable
 	{
@@ -185,7 +185,8 @@ void connection::write(const std::shared_ptr<response_t>& response, const std::v
 			std::cout << ec.message() << std::endl;
 		}
 
-		//socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+		boost::system::error_code ignored_ec;
+		socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
 		std::cout << "need close: " << need_close << std::endl;
 		if (need_close)
 			close();
