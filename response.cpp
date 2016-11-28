@@ -21,9 +21,10 @@ const std::unordered_map<unsigned int, std::string> response_t::HTTP_STATUS_TABL
 std::string g_str = "HTTP/1.0 200 OK\r\n"
 "Server: timax_server/0.1\r\n"
 "Date: Mon, 28 Nov 2016 08:38:08 GMT\r\n"
-"Content-Length:0\r\n"
+"Content-Length:4\r\n"
 "Connection:close\r\n"
-"Content-Type:text/html\r\n\r\n";
+"Content-Type:text/html\r\n\r\n"
+"test";
 
 void response_t::send_response(bool need_close)
 {
