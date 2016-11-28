@@ -5,7 +5,6 @@
 using namespace timax;
 void connection::read_head()
 {
-	//read_buf_.consume(read_buf_.size());
 	auto self = this->shared_from_this();
 	boost::asio::async_read_until(socket_, read_buf_, "\r\n\r\n", [this, self]
 		(const boost::system::error_code& ec, std::size_t bytes_transferred)
@@ -18,12 +17,10 @@ void connection::read_head()
 				std::cout << "client socket shutdown" << std::endl;
 			}
 
-			std::cout << ec.category().name()<<" "<< ec.value()<<" reason: "<< ec.message() << std::endl;
+			std::cout <<ec.value()<<" reason: "<< ec.message() << std::endl;
 			close();
 			return;
 		}
-
-		std::cout << "read ok" << std::endl;
 
 		request_t request;
 		int r = request.parse(boost::asio::buffer_cast<const char*>(read_buf_.data()), bytes_transferred);

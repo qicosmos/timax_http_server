@@ -74,8 +74,9 @@ namespace timax
 		{
 			if (!socket_.is_open())
 				return;
-
+			
 			boost::system::error_code ignored_ec;
+			socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_send, ignored_ec);
 			socket_.close(ignored_ec);
 		}
 
