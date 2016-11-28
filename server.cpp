@@ -3,12 +3,12 @@
 using namespace timax;
 void server_t::do_accept()
 {
-	auto new_connection = std::make_shared<connection>(this, ios_pool_.get_io_service());
-	acceptor_.async_accept(new_connection->socket(), [this, new_connection](boost::system::error_code const& error)
+	conn_ = std::make_shared<connection>(this, ios_pool_.get_io_service());
+	acceptor_.async_accept(conn_->socket(), [this](boost::system::error_code const& error)
 	{
 		if (!error)
 		{
-			new_connection->start();
+			conn_->start();
 		}
 		else
 		{

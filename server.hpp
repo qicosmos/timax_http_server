@@ -67,7 +67,7 @@ namespace timax
 		io_service_pool				ios_pool_;
 		tcp::acceptor				acceptor_;
 		http_router					router_;
-
+		std::shared_ptr<connection> conn_;
 		std::string static_dir_;
 	};
 }
