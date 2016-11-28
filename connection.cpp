@@ -23,6 +23,8 @@ void connection::read_head()
 			return;
 		}
 
+		std::cout << "read ok" << std::endl;
+
 		request_t request;
 		int r = request.parse(boost::asio::buffer_cast<const char*>(read_buf_.data()), bytes_transferred);
 		bool need_close = need_close_conneciton(request);
