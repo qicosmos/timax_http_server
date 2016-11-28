@@ -27,8 +27,8 @@ namespace timax
 
 		void start()
 		{
-			ios_pool_.start();
 			do_accept();
+			ios_pool_.start();
 		}
 
 		void stop()
