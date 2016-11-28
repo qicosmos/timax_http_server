@@ -18,7 +18,7 @@ void connection::read_head()
 				std::cout << "client socket shutdown" << std::endl;
 			}
 
-			std::cout << ec.message() << std::endl;
+			std::cout << ec.value()<<" reason: "<< ec.message() << std::endl;
 			close();
 			return;
 		}
