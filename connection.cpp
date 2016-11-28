@@ -174,7 +174,7 @@ void connection::write(const std::shared_ptr<response_t>& response, const std::v
 		}
 
 		//socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-
+		std::cout << "need close: " << need_close << std::endl;
 		if (need_close)
 			close();
 		else
