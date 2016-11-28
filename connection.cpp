@@ -173,7 +173,7 @@ void connection::write(const std::shared_ptr<response_t>& response, const std::v
 			std::cout << ec.message() << std::endl;
 		}
 
-		socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+		//socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 
 		if (need_close)
 			close();
