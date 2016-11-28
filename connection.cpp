@@ -3,10 +3,10 @@
 #include "connection.hpp"
 
 using namespace timax;
-void connection::read_head()
+void connection::read_head(int offset)
 {
 	auto self = this->shared_from_this();
-	boost::asio::async_read_until(socket_, read_buf_, "\r\n\r\n", [this, self]
+	socket_.async_read_some(boost::asio::buffer(read_buf_.data() + offset, read_buf_ .size()- offset), [this, self, offset]
 		(const boost::system::error_code& ec, std::size_t bytes_transferred)
 	{
 		size_t statas_code = 200;
@@ -22,8 +22,22 @@ void connection::read_head()
 			return;
 		}
 
+		if (offset + bytes_transferred > 4096)
+		{
+			statas_code = 413;
+			std::cout << "parse error" << std::endl;
+			//response(statas_code, true, self, request);
+			return;
+		}
+
 		request_t request;
-		int r = request.parse(boost::asio::buffer_cast<const char*>(read_buf_.data()), bytes_transferred);
+		int r = request.parse(read_buf_.data(), offset+bytes_transferred, offset);
+		if (r == -2)
+		{
+			read_head(offset + bytes_transferred);
+			return;
+		}
+
 		bool need_close = need_close_conneciton(request);
 
 		if (r < 0)
@@ -78,7 +92,7 @@ void connection::read_head()
 void connection::read_body(const std::shared_ptr<connection>& self, bool need_close, request_t request, size_t body_len)
 {
 	//read http body
-	boost::asio::async_read(socket_, read_buf_, boost::asio::transfer_exactly(body_len),
+	boost::asio::async_read(socket_, boost::asio::buffer(read_buf_), boost::asio::transfer_exactly(body_len),
 		[this, self, need_close, req = std::move(request)]
 	(const boost::system::error_code& ec, std::size_t bytes_transferred) mutable
 	{

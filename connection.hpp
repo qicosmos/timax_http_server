@@ -43,7 +43,7 @@ namespace timax
 		void write(const std::shared_ptr<response_t>& response, const std::vector<boost::asio::const_buffer>& buffers, bool need_close = true);
 
 	private:
-		void read_head();
+		void read_head(int offset=0);
 
 		void read_body(const std::shared_ptr<connection>& self, bool need_close, request_t request, size_t body_len);
 
@@ -84,7 +84,7 @@ namespace timax
 
 	private:
 		boost::asio::ip::tcp::socket socket_;
-		boost::asio::streambuf read_buf_;
+		std::array<char, 4096> read_buf_;
 		const int MAX_LEN = 8192;
 		std::unique_ptr<char[]> resource_buffer_;
 		server_t* server_;

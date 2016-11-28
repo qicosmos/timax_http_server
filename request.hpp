@@ -34,13 +34,18 @@ namespace timax
 		{
 			return params_;
 		}
-	private:
+
 		void set_params(std::unordered_map<std::string, std::string> params)
 		{
 			params_ = std::move(params);
 		}
 
-		int parse(const char* buf, size_t size)
+		int parse(const std::string& str, int last_len)
+		{
+			return parse(str.c_str(), str.size(), last_len);
+		}
+
+		int parse(const char* buf, size_t size, int last_len)
 		{
 			const char *method;
 			size_t method_len;
@@ -50,7 +55,7 @@ namespace timax
 			struct phr_header headers[15];
 			size_t num_headers = 15;
 
-			int last_len = 0;
+			//int last_len = 0;
 			auto r = phr_parse_request(buf, size, &method, &method_len, &path, &path_len, &minor_version, headers, &num_headers, last_len);
 			if (r < 0)
 				return r;
