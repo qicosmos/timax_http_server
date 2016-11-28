@@ -103,7 +103,7 @@ void connection::response(size_t status_code, bool need_close, const std::shared
 {
 	auto response = std::make_shared<response_t>(this, request.minor_version());
 	response->set_status(status_code);
-	response->add_body("hello world");
+	//response->add_body("hello world");
 	//callback to user
 	//bool success = server_->process_route(&request, response.get());
 	//if (!success)
@@ -172,6 +172,8 @@ void connection::write(const std::shared_ptr<response_t>& response, const std::v
 		{
 			std::cout << ec.message() << std::endl;
 		}
+
+		socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 
 		if (need_close)
 			close();
