@@ -9,18 +9,18 @@ int main()
 	server_t server(9000);
 	http_router router;
 
-	request_t request;
-	const std::string str1 = "GET / HTTP/1.0\r\n";
-	const std::string str2 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\n";
-	const std::string str3 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\nUser-Agent: ApacheBench/2.3\r\n";
-	const std::string str4 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\nUser-Agent: ApacheBench/2.3\r\nAccept: */*\r\n";
-	const std::string str5 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\nUser-Agent: ApacheBench/2.3\r\nAccept: */*\r\n\r\n";
+	//request_t request;
+	//const std::string str1 = "GET / HTTP/1.0\r\n";
+	//const std::string str2 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\n";
+	//const std::string str3 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\nUser-Agent: ApacheBench/2.3\r\n";
+	//const std::string str4 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\nUser-Agent: ApacheBench/2.3\r\nAccept: */*\r\n";
+	//const std::string str5 = "GET / HTTP/1.0\r\nHost: 192.168.2.239:9000\r\nUser-Agent: ApacheBench/2.3\r\nAccept: */*\r\n\r\n";
 
-	int r = request.parse(str1, 0);
-	r = request.parse(str2, str1.size());
-	r = request.parse(str3, str2.size());
-	r = request.parse(str4, str3.size());
-	r = request.parse(str5, str4.size());
+	//int r = request.parse(str1, 0);
+	//r = request.parse(str2, str1.size());
+	//r = request.parse(str3, str2.size());
+	//r = request.parse(str4, str3.size());
+	//r = request.parse(str5, str4.size());
 
 	router.on_get("/", [](auto , auto res) 
 	{

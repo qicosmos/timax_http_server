@@ -34,6 +34,7 @@ void connection::read_head(int offset)
 		int r = request.parse(read_buf_.data(), offset+bytes_transferred, offset);
 		if (r == -2)
 		{
+			std::cout << "incomplete \n";
 			read_head(offset + bytes_transferred);
 			return;
 		}
