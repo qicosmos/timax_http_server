@@ -6,7 +6,7 @@ using namespace timax;
 void connection::read_head(int offset)
 {
 	auto self = this->shared_from_this();
-	socket_.async_read_some(boost::asio::buffer(read_buf_.data() + offset, read_buf_ .size()- offset), [this, self, offset]
+	socket_.async_read_some(boost::asio::buffer(read_buf_ + offset, 4096 - offset), [this, self, offset]
 		(const boost::system::error_code& ec, std::size_t bytes_transferred)
 	{
 		size_t statas_code = 200;
@@ -30,26 +30,26 @@ void connection::read_head(int offset)
 			return;
 		}
 
-		request_t request;
-		int r = request.parse(read_buf_.data(), offset+bytes_transferred, offset);
-		if (r == -2)
-		{
-			std::cout << "incomplete \n";
-			read_head(offset + bytes_transferred);
-			return;
-		}
+		//request_t request;
+		//int r = request.parse(read_buf_, offset+bytes_transferred, offset);
+		//if (r == -2)
+		//{
+		//	std::cout << "incomplete \n";
+		//	read_head(offset + bytes_transferred);
+		//	return;
+		//}
 
-		bool need_close = need_close_conneciton(request);
+		bool need_close = true;// need_close_conneciton(request);
 
-		if (r < 0)
-		{
-			statas_code = 400;
-			std::cout << "parse error" << std::endl;
-			response(statas_code, need_close, self, request);
-			return;
-		}
+		//if (r < 0)
+		//{
+		//	statas_code = 400;
+		//	std::cout << "parse error" << std::endl;
+		//	response(statas_code, need_close, self, request);
+		//	return;
+		//}
 
-		size_t body_len = request.body_length();
+		size_t body_len = 0;//request.body_length();
 		if (body_len == 0)
 		{
 			boost::asio::async_write(socket_, boost::asio::buffer(g_str), [this, self](const boost::system::error_code& ec, std::size_t bytes_transferred) 
@@ -78,14 +78,14 @@ void connection::read_head(int offset)
 		}
 		else
 		{
-			std::cout << body_len << std::endl;
-			if (body_len + bytes_transferred>8192)
-			{
-				statas_code = 413;
-				response(statas_code, need_close, self, request);
-				return;
-			}
-			read_body(self, need_close, std::move(request), body_len);
+			//std::cout << body_len << std::endl;
+			//if (body_len + bytes_transferred>8192)
+			//{
+			//	statas_code = 413;
+			//	response(statas_code, need_close, self, request);
+			//	return;
+			//}
+			//read_body(self, need_close, std::move(request), body_len);
 		}
 	});
 }

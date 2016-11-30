@@ -84,7 +84,7 @@ namespace timax
 
 	private:
 		boost::asio::ip::tcp::socket socket_;
-		std::array<char, 4096> read_buf_;
+		char read_buf_[4096];
 		const int MAX_LEN = 8192;
 		std::unique_ptr<char[]> resource_buffer_;
 		server_t* server_;
