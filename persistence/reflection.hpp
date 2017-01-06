@@ -328,7 +328,7 @@ template<>struct Members<STRUCT_NAME>{\
 };
 
 #define EMMBED_TUPLE(STRUCT_NAME, N, ...) \
-    constexpr std::array<const char*, N> arr_##STRUCT_NAME = {MAKE_STR_LIST(__VA_ARGS__)};\
+    constexpr std::array<const char*, N> arr_##STRUCT_NAME = {MARCO_EXPAND(MACRO_CONCAT(CON_STR, N)(__VA_ARGS__))};\
     MAKE_TUPLE(STRUCT_NAME, MAKE_ARG_LIST(N, &STRUCT_NAME::OBJECT, __VA_ARGS__))
 
 //MAKE_TUPLE_CONST(MAKE_ARG_LIST(N, OBJECT, __VA_ARGS__))
