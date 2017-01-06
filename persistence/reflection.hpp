@@ -464,14 +464,22 @@ constexpr std::enable_if_t<!is_reflection<T>::value> for_each(const T& tp, F&& f
 };
 
 template<typename T, size_t  I>
-constexpr auto get_name()
+constexpr const char* get_name()
 {
-    static_assert(I<Members<T>::value, "out of range");
-    return Members<T>::arr[I];
+    using M = Members<std::remove_const_t <std::remove_reference_t<T>>>;
+    static_assert(I<M::value, "out of range");
+    return M::arr[I];
 }
 
 template<typename T>
-std::string get_name(size_t i)
+constexpr const char* get_name()
+{
+    using M = Members<std::remove_const_t <std::remove_reference_t<T>>>;
+    return M::name;
+}
+
+template<typename T>
+constexpr const char* get_name(size_t i)
 {
     using M = Members<std::remove_const_t <std::remove_reference_t<T>>>;
     if(i>=M::value)
@@ -480,4 +488,10 @@ std::string get_name(size_t i)
     return M::arr[i];
 }
 
+template<typename T>
+size_t get_value()
+{
+    using M = Members<std::remove_const_t <std::remove_reference_t<T>>>;
+    return M::value;
+}
 #endif //UNTITLED3_REFLECTION_HPP
